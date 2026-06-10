@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Para Você 💕</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* TELA DE INTRO */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+  }
+  #intro.hidden { opacity: 0; pointer-events: none; }
+
+  .heart-big {
+    font-size: 80px;
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .intro-title {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+  }
+
+  .tap-hint {
+    font-size: 16px;
+    color: rgba(255,255,255,0.5);
+    animation: fadeUp 2s ease-in-out infinite;
+  }
+  @keyframes fadeUp {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-5px); }
+  }
+
+  /* CONTEÚDO PRINCIPAL */
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+  }
+
+  /* CORAÇÕES FLUTUANTES */
+  #hearts-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .float-heart {
+    position: absolute;
+    font-size: 24px;
+    animation: floatUp linear forwards;
+    opacity: 0.6;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+
+  /* SEÇÕES */
+  section {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 50px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #e94560;
+    letter-spacing: 2px;
+  }
+
+  /* MENSAGEM COM EFEITO TYPEWRITER */
+  .message-box {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    min-height: 200px;
+  }
+
+  .typewriter {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #e0e0e0;
+    white-space: pre-wrap;
+    min-height: 180px;
+  }
+
+  .typewriter .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 20px;
+    background: #e94560;
+    margin-left: 2px;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* CARTAS INTERATIVAS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .flip-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px 15px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .flip-card:active { transform: scale(0.95); }
+
+  .flip-card .emoji {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  .flip-card .label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+  }
+  .flip-card .reveal {
+    font-size: 14px;
+    color: #e94560;
+    font-weight: 600;
+    margin-top: 8px;
+    display: none;
+    line-height: 1.4;
+  }
+  .flip-card.revealed .reveal { display: block; }
+  .flip-card.revealed .label { display: none; }
+
+  /* BOTÃO SURPRESA FINAL */
+  .final-section {
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .surprise-btn {
+    background: linear-gradient(135deg, #e94560, #c23152);
+    color: #fff;
+    border: none;
+    padding: 18px 45px;
+    font-size: 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(233,69,96,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .surprise-btn:active { transform: scale(0.95); }
+
+  .surprise-btn .btn-hearts {
+    position: absolute;
+    font-size: 20px;
+    animation: btnHeartAnim 1s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes btnHeartAnim {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
+  }
+
+  .final-message {
+    margin-top: 30px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #e94560;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .final-message.show { opacity: 1; }
+
+  /* CORAÇÕES AO TOCAR */
+  .touch-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 30px;
+    z-index: 999;
+    animation: touchHeartAnim 1.2s ease-out forwards;
+  }
+  @keyframes touchHeartAnim {
+    0% { opacity: 1; transform: translateY(0) scale(0.5); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
+  }
+
+  /* FIREWORKS */
+  .firework {
+    position: fixed;
+    pointer-events: none;
+    z-index: 998;
+  }
+  .firework-particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: particleBurst 1s ease-out forwards;
+  }
+  @keyframes particleBurst {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+    margin-top: 40px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="heart-big">❤️</div>
+  <div class="intro-title">Para você</div>
+  <div class="tap-hint">Toque em qualquer lugar 💫</div>
+</div>
+
+<!-- CORAÇÕES FLUTUANTES -->
+<div id="hearts-container"></div>
+
+<!-- CONTEÚDO -->
+<div class="container">
+
+  <!-- FOTO E SAUDAÇÃO -->
+  <section style="text-align:center; padding-top: 20px;">
+    <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 5px;">
+      Oi, meu amor ❤️
+    </h1>
+    <p style="color: rgba(255,255,255,0.5); font-size: 15px;">
+      Isso aqui foi feito com muito carinho pra você
+    </p>
+  </section>
+
+  <!-- MENSAGEM -->
+  <section>
+    <div class="section-title">💌 Uma cartinha pra você</div>
+    <div class="message-box">
+      <div class="typewriter" id="typewriter"></div>
+    </div>
+  </section>
+
+  <!-- COISAS QUE EU AMO EM VOCÊ -->
+  <section>
+    <div class="section-title">✨ Coisas que eu amo em você</div>
+    <div class="cards-grid" id="cardsGrid">
+      <div class="flip-card" data-reveal="Seu sorriso ilumina meus dias mais escuros">
+        <div class="emoji">😊</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+      <div class="flip-card" data-reveal="Seu abraço é meu lugar favorito no mundo">
+        <div class="emoji">🤗</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+      <div class="flip-card" data-reveal="Seu jeito único de ver a vida me inspira todos os dias">
+        <div class="emoji">✨</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+      <div class="flip-card" data-reveal="Cada segundo ao seu lado é inesquecível">
+        <div class="emoji">💫</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+      <div class="flip-card" data-reveal="Você me faz ser uma pessoa melhor todos os dias">
+        <div class="emoji">🌟</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+      <div class="flip-card" data-reveal="O simples fato de você existir já me faz feliz">
+        <div class="emoji">💖</div>
+        <div class="label">Toque para descobrir</div>
+        <div class="reveal"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SURPRESA FINAL -->
+  <section class="final-section">
+    <div class="section-title">🎁 Uma última coisa...</div>
+    <button class="surprise-btn" id="surpriseBtn">
+      💥 Toque aqui
+    </button>
+    <div class="final-message" id="finalMessage">
+      Eu te amo! ❤️<br>
+      <span style="font-size: 16px; color: rgba(255,255,255,0.6);">
+        Obrigado por existir na minha vida
+      </span>
+    </div>
+  </section>
+
+  <div class="subtitle">Feito com ❤️ por alguém que ama você</div>
+</div>
+
+<script>
+// ========== INTRO ==========
+const intro = document.getElementById('intro');
+intro.addEventListener('click', () => {
+  intro.classList.add('hidden');
+  startHearts();
+  typeMessage();
+});
+
+// ========== CORAÇÕES FLUTUANDO ==========
+const heartsContainer = document.getElementById('hearts-container');
+let heartsInterval;
+
+function startHearts() {
+  heartsInterval = setInterval(() => {
+    createHeart();
+  }, 300);
+  // create a batch initially
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => createHeart(), i * 80);
+  }
+}
+
+function createHeart() {
+  const el = document.createElement('div');
+  el.className = 'float-heart';
+  el.textContent = ['❤️', '💕', '💖', '💗', '💝', '🩷'][Math.floor(Math.random() * 6)];
+  el.style.left = Math.random() * 100 + '%';
+  el.style.fontSize = (16 + Math.random() * 24) + 'px';
+  el.style.animationDuration = (6 + Math.random() * 6) + 's';
+  el.style.animationDelay = '0s';
+  heartsContainer.appendChild(el);
+  setTimeout(() => el.remove(), 14000);
+}
+
+// ========== TYPEWRITER ==========
+const message = `Desde o momento em que você entrou na minha vida, tudo ganhou mais cor, mais sentido, mais brilho.
+
+Você é a pessoa que faz meus dias serem especiais, que transforma momentos simples em memórias inesquecíveis.
+
+Eu amo seu sorriso, seu abraço, seu jeito de ser. Amo cada detalhe seu — até aqueles que você acha que não são especiais, porque pra mim, tudo em você é perfeito.
+
+Obrigado por cada risada, cada conversa, cada silêncio compartilhado. Obrigado por ser você.
+
+Essa página é uma forma simples de dizer o que você já deve saber, mas que nunca é demais repetir:
+
+Eu te amo. 💕`;
+
+const typewriterEl = document.getElementById('typewriter');
+let charIndex = 0;
+let isTyping = false;
+
+function typeMessage() {
+  if (isTyping) return;
+  isTyping = true;
+  typewriterEl.textContent = '';
+  charIndex = 0;
+
+  function addChar() {
+    if (charIndex < message.length) {
+      const char = message[charIndex];
+      typewriterEl.textContent += char;
+      charIndex++;
+      // Simulate typing speed variation
+      const delay = char === '\n' ? 200 : (Math.random() * 40 + 20);
+      setTimeout(addChar, delay);
+    } else {
+      // Add cursor blink at the end
+      typewriterEl.innerHTML += '<span class="cursor"></span>';
+      isTyping = false;
+    }
+  }
+  addChar();
+}
+
+// ========== CARDS INTERATIVOS ==========
+const cards = document.querySelectorAll('.flip-card');
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+    const reveal = card.getAttribute('data-reveal');
+    const revealEl = card.querySelector('.reveal');
+    revealEl.textContent = '💬 ' + reveal;
+    card.classList.add('revealed');
+    // Create little hearts pop
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'touch-heart';
+        h.textContent = ['❤️', '💕', '💖', '💗'][Math.floor(Math.random() * 4)];
+        h.style.left = (card.getBoundingClientRect().left + Math.random() * card.offsetWidth) + 'px';
+        h.style.top = (card.getBoundingClientRect().top + Math.random() * card.offsetHeight) + 'px';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 1200);
+      }, i * 100);
+    }
+  });
+});
+
+// ========== SURPRESA FINAL ==========
+const surpriseBtn = document.getElementById('surpriseBtn');
+const finalMessage = document.getElementById('finalMessage');
+let surpriseCount = 0;
+
+surpriseBtn.addEventListener('click', () => {
+  surpriseCount++;
+  finalMessage.classList.add('show');
+
+  // Create hearts from button
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'touch-heart';
+      h.textContent = ['❤️', '💕', '💖', '💗', '💝', '💘'][Math.floor(Math.random() * 6)];
+      const rect = surpriseBtn.getBoundingClientRect();
+      h.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 160) + 'px';
+      h.style.top = (rect.top + Math.random() * 40) + 'px';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1200);
+    }, i * 50);
+  }
+
+  // Fireworks effect
+  createFireworks(3);
+});
+
+function createFireworks(count) {
+  for (let f = 0; f < count; f++) {
+    setTimeout(() => {
+      const colors = ['#e94560', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6b9d', '#c084fc'];
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight * 0.6;
+
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        const angle = (Math.PI * 2 / 30) * i;
+        const dist = 40 + Math.random() * 60;
+        particle.style.width = (4 + Math.random() * 6) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        particle.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+
+        // Use inline animation
+        particle.animate([
+          { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+          { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`, opacity: 0 }
+        ], {
+          duration: 800 + Math.random() * 400,
+          easing: 'ease-out',
+          fill: 'forwards'
+        });
+
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1500);
+      }
+    }, f * 300);
+  }
+}
+
+// ========== CORAÇÕES AO TOCAR NA TELA ==========
+document.addEventListener('touchstart', (e) => {
+  // Only on main content, not on buttons
+  if (e.target.closest('button') || e.target.closest('.flip-card') ||
+      e.target.closest('.gallery-item') || e.target.closest('#intro')) return;
+
+  const touch = e.touches[0];
+  const heart = document.createElement('div');
+  heart.className = 'touch-heart';
+  heart.textContent = ['❤️', '💕', '💖', '💗', '💝'][Math.floor(Math.random() * 5)];
+  heart.style.left = (touch.clientX - 15) + 'px';
+  heart.style.top = (touch.clientY - 15) + 'px';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1200);
+});
+
+// Also for mouse clicks
+document.addEventListener('click', (e) => {
+  if (e.target.closest('button') || e.target.closest('.flip-card') ||
+      e.target.closest('.gallery-item') || e.target.closest('#intro')) return;
+
+  const heart = document.createElement('div');
+  heart.className = 'touch-heart';
+  heart.textContent = ['❤️', '💕', '💖', '💗', '💝'][Math.floor(Math.random() * 5)];
+  heart.style.left = (e.clientX - 15) + 'px';
+  heart.style.top = (e.clientY - 15) + 'px';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1200);
+});
+</script>
+</body>
+</html>
